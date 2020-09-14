@@ -1,5 +1,6 @@
 import React from 'react';
-import { store, destroyEmployee, removeFromDepartment } from './store'
+import { connect } from 'react-redux';
+import { destroyEmployee, removeFromDepartment } from './store'
 import axios from 'axios';
 
 const destroy = async (employee) => {
@@ -10,19 +11,19 @@ const remove = async (employee) => {
   await axios.put(`/api/employees/${employee.id}`, { departmentId: null})
 }
 
-const Employee = ({ employee })=> {
+const Employee = ({ employee, destroyEmployee, removeFromDepartment })=> {
   return (
     <li key={ employee.id }>
       { employee.name }
       <button onClick={ ()=> {
         destroy(employee);
-        return store.dispatch(destroyEmployee(employee))
+        return destroyEmployee(employee);
       }}>x</button>
       {
         !!removeFromDepartment && (
           <button onClick={ ()=> {
             remove(employee);
-            store.dispatch(removeFromDepartment(employee))
+            return removeFromDepartment(employee);
           }}>Remove From Department</button>
         )
       }
@@ -30,4 +31,15 @@ const Employee = ({ employee })=> {
   );
 };
 
-export default Employee;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    destroyEmployee: function(employee) {
+      dispatch(destroyEmployee(employee));
+    },
+    removeFromDepartment: function(employee) {
+      dispatch(removeFromDepartment(employee));
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Employee);
