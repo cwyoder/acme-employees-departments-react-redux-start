@@ -8,7 +8,6 @@ import Stats from './Stats';
 
 class App extends React.Component{
   async componentDidMount(){
-    //store.subscribe(() => this.setState(store.getState()));
     const responses = await Promise.all([
       axios.get('/api/employees'),
       axios.get('/api/departments'),
